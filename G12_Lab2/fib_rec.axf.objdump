@@ -1,0 +1,69 @@
+
+P:/ECSE324/G12_Lab2/fib_rec.axf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__cs3_interrupt_vector>:
+.text
+			.global _start
+		
+_start:
+			LDR R1, N 			//R0 is the pointer to the number
+   0:	e59f104c 	ldr	r1, [pc, #76]	; 54 <N>
+			PUSH {R4, LR} 		//Pushing R6 b/c will manipulate its value and then need to restore it
+   4:	e92d4010 	push	{r4, lr}
+			BL FIBONACCI
+   8:	eb000001 	bl	14 <FIBONACCI>
+			POP {R4, LR}
+   c:	e8bd4010 	pop	{r4, lr}
+			B END
+  10:	ea00000e 	b	50 <END>
+
+00000014 <FIBONACCI>:
+
+FIBONACCI:	
+			CMP R1, #2			// if (R1 < 2)
+  14:	e3510002 	cmp	r1, #2
+			BLT BASE			// Base Case
+  18:	ba00000a 	blt	48 <BASE>
+			
+			SUB R1, R1, #2 		//Doing this to get Fib(n-2)
+  1c:	e2411002 	sub	r1, r1, #2
+			PUSH {LR} 			//Store value of LR when fibonacci was first called by main program to be able to do (n-2) after. Fib(n-2) in R0
+  20:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
+			BL FIBONACCI 		//Perform Fib(n-2)
+  24:	ebfffffa 	bl	14 <FIBONACCI>
+			POP {LR} 			//Restore LR to same value as when fibonacci was first called by main program to be able to return to main program
+  28:	e49de004 	pop	{lr}		; (ldr lr, [sp], #4)
+			
+			ADD R1, R1, #1 		//Doing this to get Fib(n-1)
+  2c:	e2811001 	add	r1, r1, #1
+			PUSH {R0, LR} 		//Store Fib(n-2) on stack because R0 will later be used for Fib(n-1)
+  30:	e92d4001 	push	{r0, lr}
+			BL FIBONACCI 		//Peform Fib(n-1)
+  34:	ebfffff6 	bl	14 <FIBONACCI>
+			POP {R4, LR} 		//Restore LR to same value as when fibonacci was first called by main program to be able to return to main program
+  38:	e8bd4010 	pop	{r4, lr}
+			
+			ADD R0, R4, R0 		// One iteration of the fibonacci sum i.e. fib(n-2) + fib(n-1)
+  3c:	e0840000 	add	r0, r4, r0
+			ADD R1, R1, #1 		//Restore value of R1
+  40:	e2811001 	add	r1, r1, #1
+			BX LR
+  44:	e12fff1e 	bx	lr
+
+00000048 <BASE>:
+
+BASE:		MOV R0, #1 			//Initialize fibonacci sum to first element of fibo array (1)
+  48:	e3a00001 	mov	r0, #1
+			BX LR 				//Return to caller
+  4c:	e12fff1e 	bx	lr
+
+00000050 <END>:
+
+END:		B END
+  50:	eafffffe 	b	50 <END>
+
+00000054 <N>:
+  54:	00000006 	.word	0x00000006

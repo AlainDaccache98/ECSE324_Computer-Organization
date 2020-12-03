@@ -1,0 +1,44 @@
+
+P:/ECSE324/G12_Lab2/testpushpop.axf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__cs3_interrupt_vector>:
+			.text
+			.global _start
+
+_start:
+			MOV R0, #0
+   0:	e3a00000 	mov	r0, #0
+			MOV R1, #1
+   4:	e3a01001 	mov	r1, #1
+			MOV R2, #2
+   8:	e3a02002 	mov	r2, #2
+			//SUB SP, SP, #4
+			STR R0, [SP]
+   c:	e58d0000 	str	r0, [sp]
+			SUB SP, SP, #4
+  10:	e24dd004 	sub	sp, sp, #4
+			STR R1, [SP]
+  14:	e58d1000 	str	r1, [sp]
+			SUB SP, SP, #4
+  18:	e24dd004 	sub	sp, sp, #4
+			STR R2, [SP]
+  1c:	e58d2000 	str	r2, [sp]
+			LDR R0, [SP]
+  20:	e59d0000 	ldr	r0, [sp]
+			ADD SP, SP, #4
+  24:	e28dd004 	add	sp, sp, #4
+			LDR R1, [SP]
+  28:	e59d1000 	ldr	r1, [sp]
+			ADD SP, SP, #4
+  2c:	e28dd004 	add	sp, sp, #4
+			LDR R2, [SP]
+  30:	e59d2000 	ldr	r2, [sp]
+			ADD SP, SP, #4
+  34:	e28dd004 	add	sp, sp, #4
+
+00000038 <END>:
+
+  38:	eafffffe 	b	38 <END>
